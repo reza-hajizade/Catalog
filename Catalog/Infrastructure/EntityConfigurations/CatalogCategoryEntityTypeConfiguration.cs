@@ -1,9 +1,8 @@
-﻿using Catalog.Models;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore;
+﻿
 
-namespace Catalog.Infrastructure.EntityConfigurations
-{
+
+namespace Catalog.Infrastructure.EntityConfigurations;
+
     public class CatalogCategoryEntityTypeConfiguration : IEntityTypeConfiguration<CatalogCategory>
     {
         public void Configure(EntityTypeBuilder<CatalogCategory> builder)
@@ -26,4 +25,4 @@ namespace Catalog.Infrastructure.EntityConfigurations
                 .HasForeignKey(x => x.ParentId);
         }
     }
-}
+

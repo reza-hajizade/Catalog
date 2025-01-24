@@ -1,10 +1,5 @@
-﻿using Catalog.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Data.Common;
-using System.Reflection;
+﻿namespace Catalog.Infrastructure;
 
-namespace Catalog.Infrastructure
-{
     public class CatalogDbContext(DbContextOptions<CatalogDbContext> dbContextOptions) : DbContext(dbContextOptions)
     {
         private const string DefaultSchema = "catalog";
@@ -24,4 +19,4 @@ namespace Catalog.Infrastructure
 
         }
     }
-}
+

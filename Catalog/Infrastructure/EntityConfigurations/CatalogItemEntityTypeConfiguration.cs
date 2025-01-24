@@ -1,9 +1,5 @@
-﻿using Catalog.Models;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore;
+﻿namespace Catalog.Infrastructure.EntityConfigurations;
 
-namespace Catalog.Infrastructure.EntityConfigurations
-{
     public class CatalogItemEntityTypeConfiguration : IEntityTypeConfiguration<CatalogItem>
     {
         public void Configure(EntityTypeBuilder<CatalogItem> builder)
@@ -30,4 +26,4 @@ namespace Catalog.Infrastructure.EntityConfigurations
             builder.HasIndex(x => x.Slug);
         }
     }
-}
+

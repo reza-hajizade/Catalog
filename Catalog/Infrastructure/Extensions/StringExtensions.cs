@@ -1,8 +1,5 @@
-﻿
-using System.Text.RegularExpressions;
+﻿namespace Catalog.Infrastructure.Extensions;
 
-namespace Catalog.Infrastructure.Extensions
-{
     public static class StringExtensions
     {
         public static string ToKebabCase(this string input)
@@ -14,4 +11,4 @@ namespace Catalog.Infrastructure.Extensions
             return kebab.ToLower();
         }
     }
-}
+

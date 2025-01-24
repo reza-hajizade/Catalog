@@ -1,5 +1,5 @@
-﻿namespace Catalog.Models
-{
+﻿namespace Catalog.Models;
+
     public class CatalogCategory
     {
         public const string TableName = "CatalogCategories";
@@ -39,4 +39,4 @@
 
         public ICollection<CatalogCategory> Children { get; private set; } = null!;
     }
-}
+

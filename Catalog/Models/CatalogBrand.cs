@@ -1,5 +1,5 @@
-﻿namespace Catalog.Models
-{
+﻿namespace Catalog.Models;
+
     public class CatalogBrand
     {
         public const string TableName = "CatalogBrands";
@@ -16,5 +16,5 @@
          Brand = brand
      };
     }
-}
+
 

@@ -1,12 +1,21 @@
-﻿namespace Catalog
-{
-    public class GlobalUsings
-    {
+﻿
+//Microsoft
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+global using System.Text.RegularExpressions;
+global using System.Reflection;
+global using Microsoft.Extensions.Options;
 
 
 
+// third-party
+global using FluentValidation;
+global using MassTransit;
 
-        // solution
 
-    }
-}
+
+// solution
+global using Catalog.Models;
+global using Catalog.Infrastructure.Extensions;
+global using Catalog.Infrastructure;
+

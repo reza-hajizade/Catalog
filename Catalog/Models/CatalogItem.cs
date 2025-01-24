@@ -1,7 +1,5 @@
-﻿using Catalog.Infrastructure.Extensions;
+﻿namespace Catalog.Models;
 
-namespace Catalog.Models
-{
     public class CatalogItem
     {
         public const string TableName = "CatalogItems";
@@ -55,4 +53,4 @@ namespace Catalog.Models
 
         public int CatalogCategoryId { get; private set; }
     }
-}
+

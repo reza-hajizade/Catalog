@@ -1,9 +1,7 @@
-﻿using Catalog.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿
 
-namespace Catalog.Infrastructure.EntityConfigurations
-{
+namespace Catalog.Infrastructure.EntityConfigurations;
+
     public sealed class CatalogBrandEntityTypeConfiguration : IEntityTypeConfiguration<CatalogBrand>
     {
         public void Configure(EntityTypeBuilder<CatalogBrand> builder)
@@ -15,4 +13,4 @@ namespace Catalog.Infrastructure.EntityConfigurations
                    .IsRequired(true);
         }
     }
-}
+
