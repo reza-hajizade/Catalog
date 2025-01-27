@@ -5,6 +5,8 @@ global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 global using System.Text.RegularExpressions;
 global using System.Reflection;
 global using Microsoft.Extensions.Options;
+global using Microsoft.AspNetCore.Http.HttpResults;
+
 
 
 
@@ -18,4 +20,5 @@ global using MassTransit;
 global using Catalog.Models;
 global using Catalog.Infrastructure.Extensions;
 global using Catalog.Infrastructure;
+global using Catalog.Services;
 

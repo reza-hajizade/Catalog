@@ -1,6 +1,5 @@
 ﻿using Catalog.Api.Contracts;
-using Catalog.Services;
-using Microsoft.AspNetCore.Http.HttpResults;
+
 
 namespace Catalog.Api;
 

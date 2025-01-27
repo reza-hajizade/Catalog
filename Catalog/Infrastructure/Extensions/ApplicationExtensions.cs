@@ -1,5 +1,4 @@
-﻿using Catalog;
-
+﻿
 namespace Catalog.Infrastructure.Extensions;
 
 public static class ApplicationExtensions
