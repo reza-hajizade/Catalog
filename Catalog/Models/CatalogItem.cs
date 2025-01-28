@@ -28,7 +28,9 @@
                 CatalogCategoryId = categoryId,
                 Description = description,
                 Slug = name.ToKebabCase(),
-                Price = price
+                Price = price,
+                MaxStockThreshold=maxStockThreshold
+                
             };
 
 
