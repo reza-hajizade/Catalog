@@ -1,7 +1,6 @@
 ﻿namespace Catalog.Api.Contracts;
 
     public sealed record CatalogItemResponse(
-      int Id,
       string Name,
       string Slug,
       string Description,
@@ -11,6 +10,7 @@
       string CategoryName,
       decimal Price,
       int AvailableStock,
-      int MaxStockThreshold
+      int MaxStockThreshold,
+      IReadOnlyCollection<CatalogMedia> medias
       );
 

@@ -1,34 +1,30 @@
 ﻿namespace Catalog.Api.Contracts;
 
-    public sealed record UpdateCatalogItemRequest(
-    int Id,
-    string Name,
-    string Description,
-    int CatalogId,
-    int BrandId);
+public sealed record UpdateCatalogItemRequest(
+string slug,
+string Description,
+int CatalogId,
+int BrandId);
 
-    public sealed class UpdateCatalogItemRequestValidator : AbstractValidator<UpdateCatalogItemRequest>
+public sealed class UpdateCatalogItemRequestValidator : AbstractValidator<UpdateCatalogItemRequest>
+{
+    public UpdateCatalogItemRequestValidator()
     {
-        public UpdateCatalogItemRequestValidator()
-        {
-            RuleFor(x => x.Name)
-                .NotEmpty()
-                .NotNull()
-                .MaximumLength(100);
 
-            RuleFor(x => x.Description)
-                .NotEmpty()
-                .NotNull()
-                .MaximumLength(5000);
+        RuleFor(x => x.Description)
+            .NotEmpty()
+            .NotNull()
+            .MaximumLength(5000);
 
-            RuleFor(x => x.CatalogId)
-                .NotNull();
+        RuleFor(x => x.CatalogId)
+            .NotNull();
 
-            RuleFor(x => x.BrandId)
-                .NotNull();
+        RuleFor(x => x.BrandId)
+            .NotNull();
 
-            RuleFor(x => x.Id)
-                .NotNull();
-        }
+        RuleFor(x => x.slug)
+       .MaximumLength(150)
+       .NotNull();
     }
+}
 

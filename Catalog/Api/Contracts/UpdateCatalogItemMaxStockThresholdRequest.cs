@@ -1,7 +1,7 @@
 ﻿namespace Catalog.Api.Contracts;
 
 public sealed record UpdateCatalogItemMaxStockThresholdRequest(
-     int Id,
+     string Slug,
      int MaxStockThreshold);
 
 public sealed class UpdateCatalogItemMaxStockThresholdRequestValidator : AbstractValidator<UpdateCatalogItemMaxStockThresholdRequest>
@@ -11,7 +11,8 @@ public sealed class UpdateCatalogItemMaxStockThresholdRequestValidator : Abstrac
         RuleFor(x => x.MaxStockThreshold)
              .GreaterThan(0);
 
-        RuleFor(x => x.Id)
-            .NotNull();
+        RuleFor(x => x.Slug)
+                .MaximumLength(150)
+                .NotNull();
     }
 }

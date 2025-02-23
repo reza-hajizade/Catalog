@@ -10,12 +10,12 @@ public static class CatalogItemApi
     {
         app.MapPost("/", CreateItem);
         app.MapPut("/", UpdateItem);
-        app.MapPatch("/MaxStockThreshold", UpdateMaxStockThreshold);
-        app.MapDelete("/{id:int:required}", DeleteItemById);
-        app.MapGet("/{id:int:required}", GetItemById);
+        app.MapPatch("/max_stock_threshold", UpdateMaxStockThreshold);
+        app.MapDelete("/{slug:required}", DeleteItemById);
+        app.MapGet("/{slug:required}", GetItemById);
         app.MapGet("/", GetItems);
-   
-        
+
+
         return app;
 
     }
@@ -65,12 +65,12 @@ public static class CatalogItemApi
         services.Context.CatalogItems.Add(item);
         await services.Context.SaveChangesAsync(cancellationToken);
 
-        var hintUrl = $"/api/v1/items/{item.Id}";
+        var detailUrl = $"/api/v1/items/{item.Slug}";
 
         var LoadedItem = await services.Context.CatalogItems
             .Include(x => x.CatalogBrand)
             .Include(x => x.CatalogCategory)
-            .FirstAsync(x => x.Id == item.Id);
+            .FirstAsync(x => x.Slug == item.Slug);
 
         await services.Publish.Publish(new CatalogItemAddedEvent(
             LoadedItem.Name,
@@ -78,9 +78,9 @@ public static class CatalogItemApi
             LoadedItem.CatalogCategory.Category,
             LoadedItem.CatalogBrand.Brand,
             LoadedItem.Slug,
-            hintUrl));
+            detailUrl));
 
-        return TypedResults.Created(hintUrl);
+        return TypedResults.Created(detailUrl);
     }
 
     public static async Task<Results<Created, ValidationProblem, NotFound<string>, BadRequest<string>>> UpdateItem(
@@ -96,11 +96,11 @@ public static class CatalogItemApi
             return TypedResults.ValidationProblem(validate.ToDictionary());
         }
 
-        var Item = await services.Context.CatalogItems.FirstOrDefaultAsync(x => x.Id == itemToUpdate.Id, cancellationToken);
+        var Item = await services.Context.CatalogItems.FirstOrDefaultAsync(x => x.Slug == itemToUpdate.slug, cancellationToken);
 
         if (Item is null)
         {
-            return TypedResults.NotFound($"Item with id {Item.Id} is not valid");
+            return TypedResults.NotFound($"Item with slug {itemToUpdate.slug} is not valid");
         }
 
         var hasCategory = await services.Context.CatalogCategories.AnyAsync(x => x.Id == itemToUpdate.CatalogId, cancellationToken);
@@ -116,41 +116,36 @@ public static class CatalogItemApi
             return TypedResults.BadRequest($"A brand Id is not valid.");
         }
 
-        var hasItemSlug = await services.Context.CatalogItems.AnyAsync(x => x.Id != Item.Id &&
-                                                                            x.Slug == itemToUpdate.Name.ToKebabCase(), cancellationToken);
 
-        if (hasItemSlug)
-        {
-            return TypedResults.BadRequest($"A Item with the slug '{itemToUpdate.Name.ToKebabCase()}' already exists.");
-        }
-
-
-        Item.Update(itemToUpdate.Name,
+        Item.Update(
            itemToUpdate.Description,
            itemToUpdate.BrandId,
            itemToUpdate.CatalogId);
+
         await services.Context.SaveChangesAsync(cancellationToken);
 
 
 
-        var LoadedItem = await services.Context.CatalogItems
+        var loadedItem = await services.Context.CatalogItems
             .Include(x => x.CatalogBrand)
             .Include(x => x.CatalogCategory)
-            .FirstAsync(x => x.Id == Item.Id);
+            .FirstAsync(x => x.Slug == Item.Slug);
 
+        var detailUrl = $"/api/v1/items/{loadedItem.Slug}";
 
         await services.Publish.Publish(
             new CatalogItemChangedEvent(
-                LoadedItem.Name,
-                LoadedItem.Description,
-                LoadedItem.CatalogCategory.Category,
-                LoadedItem.CatalogBrand.Brand,
-                LoadedItem.Slug));
+                loadedItem.Name,
+                loadedItem.Description,
+                loadedItem.CatalogCategory.Category,
+                loadedItem.CatalogBrand.Brand,
+                loadedItem.Slug,
+                detailUrl));
 
 
 
 
-        return TypedResults.Created($"/api/v1/items/{Item.Id}");
+        return TypedResults.Created(detailUrl);
     }
 
     public static async Task<Results<Created, ValidationProblem, NotFound<string>, BadRequest<string>>> UpdateMaxStockThreshold(
@@ -166,28 +161,30 @@ CancellationToken cancellationToken)
             return TypedResults.ValidationProblem(validate.ToDictionary());
         }
 
-        var Item = await services.Context.CatalogItems.FirstOrDefaultAsync(i => i.Id == itemToUpdate.Id, cancellationToken);
+        var Item = await services.Context.CatalogItems.FirstOrDefaultAsync(i => i.Slug == itemToUpdate.Slug, cancellationToken);
         if (Item is null)
         {
-            return TypedResults.NotFound($"Item with id {itemToUpdate.Id} not found.");
+            return TypedResults.NotFound($"Item with Slug {itemToUpdate.Slug} not found.");
         }
 
+        Item.SetMaxStockThreshold(itemToUpdate.MaxStockThreshold);
 
         await services.Context.SaveChangesAsync(cancellationToken);
 
-        return TypedResults.Created($"/api/v1/items/{Item.Id}");
+        return TypedResults.Created($"/api/v1/items/{Item.Slug}");
 
     }
 
     public static async Task<Results<NoContent, NotFound, BadRequest<string>>> DeleteItemById
-   ([AsParameters] CatalogServices services, int id, CancellationToken cancellationToken)
+   ([AsParameters] CatalogServices services, string slug, CancellationToken cancellationToken)
     {
-        if (id <= 0)
+
+        if (string.IsNullOrEmpty(slug))
         {
-            return TypedResults.BadRequest("Id is not valid.");
+            return TypedResults.BadRequest("Slug is not valid.");
         }
 
-        var item = await services.Context.CatalogItems.FirstOrDefaultAsync(x => x.Id == id);
+        var item = await services.Context.CatalogItems.FirstOrDefaultAsync(x => x.Slug == slug);
         if (item is null)
         {
             return TypedResults.NotFound();
@@ -200,23 +197,22 @@ CancellationToken cancellationToken)
 
     public static async Task<Results<Ok<CatalogItemResponse>, NotFound, BadRequest<string>>> GetItemById(
 [AsParameters] CatalogServices services,
-int id)
+string slug)
     {
-        if (id <= 0)
+        if (string.IsNullOrEmpty(slug))
         {
-            return TypedResults.BadRequest("Id is not valid.");
+            return TypedResults.BadRequest("Slug is not valid.");
         }
         var item = await services.Context.CatalogItems
                                          .Include(x => x.CatalogBrand)
                                          .Include(x => x.CatalogCategory)
-                                         .FirstOrDefaultAsync(ci => ci.Id == id);
+                                         .FirstOrDefaultAsync(ci => ci.Slug == slug);
         if (item is null)
         {
             return TypedResults.NotFound();
         }
         return TypedResults.Ok(
-            new CatalogItemResponse(
-                item.Id,
+            new CatalogItemResponse(            
                 item.Name,
                 item.Slug,
                 item.Description,
@@ -226,7 +222,8 @@ int id)
                 item.CatalogCategory.Category,
                 item.Price,
                 item.AvailableStock,
-                item.MaxStockThreshold));
+                item.MaxStockThreshold, [.. item.Medias]));
+
     }
 
     public static async Task<Results<Ok<IEnumerable<CatalogItemResponse>>, BadRequest<string>>> GetItems(
@@ -234,11 +231,12 @@ int id)
     {
 
 
-        var items = await services.Context.CatalogItems
+        var items = (await services.Context.CatalogItems
                           .Include(x => x.CatalogBrand)
                           .Include(x => x.CatalogCategory)
-                          .Select(x => new CatalogItemResponse(x.Id,
-                                                               x.Name,
+                          .OrderBy(c => c.Name)
+                          .ToListAsync(cancellationToken))
+                          .Select(x => new CatalogItemResponse(x.Name,
                                                                x.Slug,
                                                                x.Description,
                                                                x.CatalogBrandId,
@@ -247,9 +245,9 @@ int id)
                                                                x.CatalogCategory.Category,
                                                                x.Price,
                                                                x.AvailableStock,
-                                                               x.MaxStockThreshold))
-                          .OrderBy(c => c.Id)
-                          .ToListAsync(cancellationToken);
+                                                               x.MaxStockThreshold, [.. x.Medias]));
+
+
 
         return TypedResults.Ok<IEnumerable<CatalogItemResponse>>(items);
     }

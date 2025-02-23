@@ -1,10 +1,10 @@
-﻿namespace Catalog.Models;
+﻿using Catalog.Infrastructure.Exceptions;
+
+namespace Catalog.Models;
 
 public class CatalogItem
 {
     public const string TableName = "CatalogItems";
-
-    public int Id { get; private set; }
 
     public string Name { get; private set; } = null!;
 
@@ -38,15 +38,22 @@ public class CatalogItem
         return newItem;
     }
 
-    public void Update(string name, string description, int brandId, int categoryId)
+    public void Update( string description, int brandId, int categoryId)
     {
-        Name = name;
+      
         CatalogBrandId = brandId;
         CatalogCategoryId = categoryId;
         Description = description;
-        Slug = name.ToKebabCase();
+       
     }
 
+    public void SetMaxStockThreshold(int maxStockThreshold)
+    {
+        if (maxStockThreshold <= 0)
+            throw new PriceGreaterThanZeroException();
+
+        MaxStockThreshold = maxStockThreshold;
+    }
 
     public CatalogBrand CatalogBrand { get; private set; } = null!;
 
@@ -55,8 +62,47 @@ public class CatalogItem
     public CatalogCategory CatalogCategory { get; private set; } = null!;
 
     public int CatalogCategoryId { get; private set; }
- 
+    public int RemoveStock(int quantity)
+    {
+        if (AvailableStock == 0)
+        {
+            throw new EmptyStockException(Name);
+        }
 
+        if (quantity <= 0)
+        {
+            throw new QuantityGreaterThanZeroException();
+        }
+
+        int removed = Math.Min(quantity, AvailableStock);
+
+        AvailableStock -= removed;
+        return removed;
+    }
+
+    public int AddStock(int quantity)
+    {
+        int original = AvailableStock;
+
+        if ((AvailableStock + quantity) > MaxStockThreshold)
+        {
+            AvailableStock += (MaxStockThreshold - AvailableStock);
+        }
+        else
+        {
+            AvailableStock += quantity;
+        }
+
+        return AvailableStock - original;
+    }
+
+    public void UpdatePrice(decimal price)
+    {
+        if (price <= 0)
+            throw new PriceGreaterThanZeroException();
+
+        Price = price;
+    }
     public void AddMedia(string fileName, string url)
     {
         Medias.Add(new CatalogMedia(fileName, url));

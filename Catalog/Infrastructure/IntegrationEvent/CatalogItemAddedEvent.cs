@@ -6,6 +6,6 @@
             string CatalogCategory,
             string CatalogBrand,
             string Slug,
-            string hintUrl);
+            string DetailUrl);
              
 

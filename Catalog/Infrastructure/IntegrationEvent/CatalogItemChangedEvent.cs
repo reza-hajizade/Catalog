@@ -5,5 +5,6 @@
             string Description,
             string CatalogCategory,
             string CatalogBrand,
-            string Slug);
+            string Slug,
+            string DetailUrl);
 
