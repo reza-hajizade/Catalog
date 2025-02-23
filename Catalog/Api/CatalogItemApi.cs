@@ -14,8 +14,8 @@ public static class CatalogItemApi
         app.MapDelete("/{id:int:required}", DeleteItemById);
         app.MapGet("/{id:int:required}", GetItemById);
         app.MapGet("/", GetItems);
-
-
+   
+        
         return app;
 
     }

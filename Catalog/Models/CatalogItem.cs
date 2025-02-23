@@ -56,5 +56,10 @@ public class CatalogItem
 
     public int CatalogCategoryId { get; private set; }
  
+
+    public void AddMedia(string fileName, string url)
+    {
+        Medias.Add(new CatalogMedia(fileName, url));
+    }
 }
 
