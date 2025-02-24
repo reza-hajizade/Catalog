@@ -96,10 +96,17 @@
                 return TypedResults.BadRequest("Id is not valid.");
             }
 
-            var category = await services.Context.CatalogCategories.FirstOrDefaultAsync(p => p.Id == id);
+            var category = await services.Context.CatalogCategories
+                .Include(ci=>ci.Children)
+                .FirstOrDefaultAsync(p => p.Id == id);
             if (category is null)
             {
                 return TypedResults.NotFound();
+            }
+
+            if (category.Children.Any())
+            {
+                return TypedResults.BadRequest("The category has child categories and cannot be deleted.");
             }
 
             services.Context.CatalogCategories.Remove(category);
@@ -115,7 +122,9 @@
                 return TypedResults.BadRequest("Id is not valid.");
             }
 
-            var category = await services.Context.CatalogCategories.FirstOrDefaultAsync(c => c.Id == id);
+            var category = await services.Context.CatalogCategories
+                .Include(ci => ci.Parent)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             if (category is null)
             {
