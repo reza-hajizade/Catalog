@@ -57,7 +57,7 @@
             services.Context.CatalogCategories.Add(category);
             await services.Context.SaveChangesAsync(cancellationToken);
 
-            return TypedResults.Created($"/api/v1/categories/{category.Id}");
+            return TypedResults.Created($"/catalog/api/v1/categories/{category.Id}");
         }
 
 
@@ -85,7 +85,7 @@
             category.Update(categoryToUpdate.Category);
             await Services.Context.SaveChangesAsync(cancellationToken);
 
-            return TypedResults.Created($"/api/v1/categories/{category.Id}");
+            return TypedResults.Created($"/catalog/api/v1/categories/{category.Id}");
         }
 
         public static async Task<Results<NoContent, NotFound, BadRequest<string>>> DeleteCategoryById(

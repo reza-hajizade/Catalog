@@ -64,7 +64,7 @@ public static class CatalogItemEndpoints
         services.Context.CatalogItems.Add(item);
         await services.Context.SaveChangesAsync(cancellationToken);
 
-        var detailUrl = $"/api/v1/items/{item.Slug}";
+        var detailUrl = $"/catalog/api/v1/items/{item.Slug}";
 
         var LoadedItem = await services.Context.CatalogItems
             .Include(x => x.CatalogBrand)
@@ -130,7 +130,7 @@ public static class CatalogItemEndpoints
             .Include(x => x.CatalogCategory)
             .FirstAsync(x => x.Slug == Item.Slug);
 
-        var detailUrl = $"/api/v1/items/{loadedItem.Slug}";
+        var detailUrl = $"/catalog/api/v1/items/{loadedItem.Slug}";
 
         await services.Publish.Publish(
             new CatalogItemChangedEvent(
@@ -170,7 +170,7 @@ CancellationToken cancellationToken)
 
         await services.Context.SaveChangesAsync(cancellationToken);
 
-        return TypedResults.Created($"/api/v1/items/{Item.Slug}");
+        return TypedResults.Created($"/catalog/api/v1/items/{Item.Slug}");
 
     }
 

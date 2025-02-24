@@ -38,7 +38,7 @@ public static class CatalogBrandEndpoints
         services.Context.CatalogBrands.Add(brand);
         await services.Context.SaveChangesAsync(cancellationToken);
 
-        return TypedResults.Created($"/api/v1/brands/{brand.Id}");
+        return TypedResults.Created($"/catalog/api/v1/brands/{brand.Id}");
     }
 
     public static async Task<Results<Created, ValidationProblem, NotFound<string>>> UpdateBrand(
@@ -64,7 +64,7 @@ public static class CatalogBrandEndpoints
         brand.Update(brandToUpdate.Brand);
 
         await services.Context.SaveChangesAsync(cancellationToken);
-        return TypedResults.Created($"/api/v1/brands/{brand.Id}");
+        return TypedResults.Created($"/catalog/api/v1/brands/{brand.Id}");
     }
 
     public static async Task<Results<NoContent, NotFound, BadRequest<string>>> DeleteBrandById(
