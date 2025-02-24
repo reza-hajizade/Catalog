@@ -21,4 +21,5 @@ global using Catalog.Models;
 global using Catalog.Infrastructure.Extensions;
 global using Catalog.Infrastructure;
 global using Catalog.Services;
-
+global using Catalog.Endpoints.Contracts;
+global using Catalog.Endpoints;

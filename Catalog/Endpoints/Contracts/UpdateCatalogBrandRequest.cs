@@ -1,4 +1,4 @@
-﻿namespace Catalog.Api.Contracts;
+﻿namespace Catalog.Endpoints.Contracts;
 
 public sealed record UpdateCatalogBrandRequest(int Id, string Brand);
 

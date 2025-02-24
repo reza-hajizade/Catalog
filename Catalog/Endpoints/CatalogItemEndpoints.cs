@@ -1,12 +1,11 @@
-﻿using Catalog.Api.Contracts;
-using Catalog.Infrastructure.IntegrationEvent;
+﻿using Catalog.Infrastructure.IntegrationEvent;
 
-namespace Catalog.Api;
+namespace Catalog.Endpoints;
 
-public static class CatalogItemApi
+public static class CatalogItemEndpoints
 {
 
-    public static IEndpointRouteBuilder MapCatalogItemApis(this IEndpointRouteBuilder app)
+    public static IEndpointRouteBuilder MapCatalogItemEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapPost("/", CreateItem);
         app.MapPut("/", UpdateItem);

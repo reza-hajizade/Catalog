@@ -1,12 +1,9 @@
-﻿using Catalog.Api.Contracts;
+﻿namespace Catalog.Endpoints;
 
-
-namespace Catalog.Api;
-
-public static class CatalogBrandApi
+public static class CatalogBrandEndpoints
 {
 
-    public static IEndpointRouteBuilder MapCatalogBrandApis(this IEndpointRouteBuilder app)
+    public static IEndpointRouteBuilder MapCatalogBrandEndpoints(this IEndpointRouteBuilder app)
     {
         app.MapPost("/", CreateBrand);
         app.MapPut("/", UpdateBrand);
