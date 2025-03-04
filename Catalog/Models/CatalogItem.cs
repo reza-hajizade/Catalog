@@ -30,9 +30,10 @@ public class CatalogItem
             Description = description,
             Slug = name.ToKebabCase(),
             Price = price,
-            MaxStockThreshold = maxStockThreshold
 
         };
+
+        newItem.SetMaxStockThreshold(maxStockThreshold);
 
 
         return newItem;

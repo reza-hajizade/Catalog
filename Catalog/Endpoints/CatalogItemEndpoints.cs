@@ -205,6 +205,7 @@ string slug)
         var item = await services.Context.CatalogItems
                                          .Include(x => x.CatalogBrand)
                                          .Include(x => x.CatalogCategory)
+                                         .Include(x=>x.Medias)
                                          .FirstOrDefaultAsync(ci => ci.Slug == slug);
         if (item is null)
         {
